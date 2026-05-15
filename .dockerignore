@@ -1,0 +1,23 @@
+
+# Maven build output
+target/
+
+# Git
+.git/
+.gitignore
+
+# Docker and compose
+Dockerfile
+docker-compose.yml
+
+# IDEs and editors
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
+
+# Maven wrapper (not needed inside the container build)
+mvnw
+mvnw.cmd
