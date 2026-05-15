@@ -3,6 +3,8 @@ package com.example.log_flow.auth.service;
 import com.example.log_flow.auth.dto.AuthResponse;
 import com.example.log_flow.auth.dto.LoginRequest;
 import com.example.log_flow.auth.dto.RegisterRequest;
+import com.example.log_flow.auth.dto.UserResponse;
+import com.example.log_flow.auth.mapper.UserMapper;
 import com.example.log_flow.auth.entity.User;
 import com.example.log_flow.auth.repository.UserRepository;
 import com.example.log_flow.auth.security.JwtService;
@@ -47,5 +49,11 @@ public class AuthService {
         userRepository.save(user);
         String token = jwtService.generateToken(user.getEmail());
         return new AuthResponse(token);
+    }
+
+    public UserResponse getCurrentUser(String email) {
+        return userRepository.findByEmail(email)
+                .map(UserMapper::toResponse)
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "user_not_found", "User not found"));
     }
 }

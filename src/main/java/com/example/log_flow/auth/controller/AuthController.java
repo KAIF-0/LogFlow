@@ -45,9 +45,7 @@ public class AuthController {
         if (details == null) {
             throw new AppException(HttpStatus.UNAUTHORIZED, "unauthorized", "Unauthorized");
         }
-        return userRepository.findByEmail(details.getUsername())
-                .map(UserMapper::toResponse)
-                .map(resp -> ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), resp)))
-                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "user_not_found", "User not found"));
+        UserResponse user = authService.getCurrentUser(details.getUsername());
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), user));
     }
 }
