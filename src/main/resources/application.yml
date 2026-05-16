@@ -1,0 +1,68 @@
+spring:
+  application:
+    name: log_flow
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  data:
+    redis:
+      url: ${REDIS_URL}
+
+  rabbitmq:
+    addresses: ${RABBITMQ_URL:}
+    listener:
+        simple:
+            auto-startup: false
+
+  mail:
+    host: ${MAIL_HOST:}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  web:
+    resources:
+      add-mappings: false
+
+#   mvc:
+#     throw-exception-if-no-handler-found: true
+
+server:
+  port: 8080
+  tomcat:
+    connection-timeout: 5s
+    threads:
+      max: 200
+      min-spare: 20
+    accept-count: 100
+
+rate-limit:
+  requests-per-minute: ${RATE_LIMIT_REQUESTS_PER_MINUTE:5}
+  burst-capacity: ${RATE_LIMIT_BURST_CAPACITY:10}
+
+ingestion-rate-limit:
+  requests-per-minute: ${INGESTION_RATE_LIMIT_REQUESTS_PER_MINUTE:60}
+  burst-capacity: ${INGESTION_RATE_LIMIT_BURST_CAPACITY:60}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-ms: ${JWT_EXPIRATION_MS}
