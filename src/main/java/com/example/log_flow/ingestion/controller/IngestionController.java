@@ -26,4 +26,9 @@ public class IngestionController {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(ApiResponse.success(HttpStatus.ACCEPTED.value(), null));
     }
+
+    @GetMapping("/validate")
+    public ResponseEntity<ApiResponse<String>> validate(@RequestAttribute("projectContext") ProjectContext context) {
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), "ok"));
+    }
 }
