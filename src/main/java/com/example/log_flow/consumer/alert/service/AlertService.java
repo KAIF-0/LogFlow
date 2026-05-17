@@ -1,5 +1,10 @@
 package com.example.log_flow.consumer.alert.service;
 
+import java.time.Duration;
+
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
+
 import com.example.log_flow.consumer.alert.entity.ProjectAlert;
 import com.example.log_flow.consumer.alert.repository.ProjectAlertRepository;
 import com.example.log_flow.consumer.common.service.EmailService;
@@ -10,10 +15,6 @@ import com.example.log_flow.project.entity.Project;
 import com.example.log_flow.project.repository.ProjectRepository;
 import com.example.log_flow.rules.entity.ProjectRules;
 import com.example.log_flow.rules.repository.ProjectRulesRepository;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Service;
-
-import java.time.Duration;
 
 @Service
 public class AlertService {
@@ -29,11 +30,11 @@ public class AlertService {
     private final IngestionEventService ingestionEventService;
 
     public AlertService(ProjectRulesRepository rulesRepository,
-                        ProjectRepository projectRepository,
-                        ProjectAlertRepository alertRepository,
-                        StringRedisTemplate redisTemplate,
-                        EmailService emailService,
-                        IngestionEventService ingestionEventService) {
+            ProjectRepository projectRepository,
+            ProjectAlertRepository alertRepository,
+            StringRedisTemplate redisTemplate,
+            EmailService emailService,
+            IngestionEventService ingestionEventService) {
         this.rulesRepository = rulesRepository;
         this.projectRepository = projectRepository;
         this.alertRepository = alertRepository;

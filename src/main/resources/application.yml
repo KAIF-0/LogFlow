@@ -24,8 +24,8 @@ spring:
   rabbitmq:
     addresses: ${RABBITMQ_URL:}
     listener:
-        simple:
-            auto-startup: false
+      simple:
+        auto-startup: true
 
   mail:
     host: ${MAIL_HOST:}
