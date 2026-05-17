@@ -1,5 +1,11 @@
 package com.example.log_flow.project.service;
 
+import java.time.Instant;
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
 import com.example.log_flow.auth.entity.User;
 import com.example.log_flow.auth.repository.UserRepository;
 import com.example.log_flow.common.enums.ProjectStatus;
@@ -12,12 +18,6 @@ import com.example.log_flow.project.entity.Project;
 import com.example.log_flow.project.mapper.ProjectMapper;
 import com.example.log_flow.project.repository.ProjectRepository;
 import com.example.log_flow.rules.service.RulesService;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.util.List;
 
 
 @Service
@@ -45,6 +45,8 @@ public class ProjectService {
         project.setName(req.getName());
         project.setDescription(req.getDescription());
         project.setEnvironment(req.getEnvironment());
+        project.setApiKeyHash("pending");
+        project.setApiKeyPrefix("pending");
         project.setStatus(ProjectStatus.ACTIVE);
         project.setIngestionEnabled(true);
         project.setCreatedAt(Instant.now());

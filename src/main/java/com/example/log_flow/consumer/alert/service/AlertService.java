@@ -75,6 +75,7 @@ public class AlertService {
                 if (count != null && count >= threshold) {
                     Boolean locked = redisTemplate.opsForValue().setIfAbsent(lockKey, "1", Duration.ofSeconds(windowSec));
                     if (locked != null && locked) {
+                        // System.out.println("Threshold reached for projectId: " + message.getProjectId() + ", count: " + count);
                         sendAlert(message.getProjectId(), count.intValue(), windowSec);
                     }
                 }
@@ -96,6 +97,7 @@ public class AlertService {
     }
 
     private void sendAlert(Long projectId, int count, int windowSec) {
+        // System.out.println("Sending alert for projectId: "+ projectId);
         Project project = projectRepository.findWithUserById(projectId).orElse(null);
         if (project == null || project.getUser() == null) {
             return;
@@ -103,9 +105,9 @@ public class AlertService {
         String to = project.getUser().getEmail();
         String subject = "LogFlow alert for project " + project.getName();
         String body = "Failure threshold reached. Failed count: " + count + " in " + windowSec + " seconds.";
-
+        // System.out.println("Sending email to: " + to + ", subject: " + subject + ", body: " + body);
         emailService.send(to, subject, body);
-
+        // System.out.println("Email sent to: " + to);
         ProjectAlert alert = new ProjectAlert();
         alert.setProjectId(projectId);
         alert.setAlertType("FAILURE_THRESHOLD");
