@@ -53,6 +53,9 @@ public class Project {
     @Column(name = "api_key_prefix", nullable = false)
     private String apiKeyPrefix;
 
+    @Column(name = "alert_email")
+    private String alertEmail;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ProjectStatus status = ProjectStatus.ACTIVE;

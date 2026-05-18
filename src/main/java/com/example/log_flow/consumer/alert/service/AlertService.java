@@ -98,10 +98,13 @@ public class AlertService {
 
     private void sendAlert(Long projectId, int count, int windowSec) {
         Project project = projectRepository.findWithUserById(projectId).orElse(null);
-        if (project == null || project.getUser() == null) {
+        if (project == null) {
             return;
         }
-        String to = project.getUser().getEmail();
+        String to = project.getAlertEmail();
+        if (to == null || to.isBlank()) {
+            return;
+        }
         String subject = "LogFlow alert for project " + project.getName();
         String body = "Failure threshold reached. Failed count: " + count + " in " + windowSec + " seconds.";
         // System.out.println("Sending email to: " + to + ", subject: " + subject + ", body: " + body);

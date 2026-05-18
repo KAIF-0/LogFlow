@@ -1,6 +1,7 @@
 package com.example.log_flow.project.controller;
 
 import com.example.log_flow.common.response.ApiResponse;
+import com.example.log_flow.project.dto.AlertEmailRequest;
 import com.example.log_flow.project.dto.CreateProjectRequest;
 import com.example.log_flow.project.dto.IngestionStatusRequest;
 import com.example.log_flow.project.dto.ProjectResponse;
@@ -65,6 +66,14 @@ public class ProjectController {
                                                                         @PathVariable Long id,
                                                                         @Valid @RequestBody IngestionStatusRequest request) {
         ProjectResponse response = projectService.updateIngestion(userDetails.getUsername(), id, request);
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), response));
+    }
+
+    @PatchMapping("/{id}/alert-email")
+    public ResponseEntity<ApiResponse<ProjectResponse>> updateAlertEmail(@AuthenticationPrincipal UserDetails userDetails,
+                                                                         @PathVariable Long id,
+                                                                         @Valid @RequestBody AlertEmailRequest request) {
+        ProjectResponse response = projectService.updateAlertEmail(userDetails.getUsername(), id, request);
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), response));
     }
 }

@@ -11,6 +11,7 @@ import com.example.log_flow.auth.repository.UserRepository;
 import com.example.log_flow.common.enums.ProjectStatus;
 import com.example.log_flow.common.exception.AppException;
 import com.example.log_flow.project.dto.CreateProjectRequest;
+import com.example.log_flow.project.dto.AlertEmailRequest;
 import com.example.log_flow.project.dto.IngestionStatusRequest;
 import com.example.log_flow.project.dto.ProjectResponse;
 import com.example.log_flow.project.dto.UpdateProjectRequest;
@@ -44,6 +45,7 @@ public class ProjectService {
         project.setUser(user);
         project.setName(req.getName());
         project.setDescription(req.getDescription());
+        project.setAlertEmail(user.getEmail());
         project.setEnvironment(req.getEnvironment());
         project.setApiKeyHash("pending");
         project.setApiKeyPrefix("pending");
@@ -117,6 +119,17 @@ public class ProjectService {
     public ProjectResponse updateIngestion(String email, Long id, IngestionStatusRequest req) {
         Project project = requireOwnedProject(email, id);
         project.setIngestionEnabled(req.getIngestionEnabled());
+        project.setUpdatedAt(Instant.now());
+        projectRepository.save(project);
+        return ProjectMapper.toResponse(project, null);
+    }
+
+    public ProjectResponse updateAlertEmail(String email, Long id, AlertEmailRequest req) {
+        Project project = requireOwnedProject(email, id);
+        if (req.getAlertEmail() == null || req.getAlertEmail().isBlank()) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "invalid_alert_email", "Alert email is required");
+        }
+        project.setAlertEmail(req.getAlertEmail());
         project.setUpdatedAt(Instant.now());
         projectRepository.save(project);
         return ProjectMapper.toResponse(project, null);

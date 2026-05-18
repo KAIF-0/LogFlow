@@ -11,6 +11,7 @@ public class ProjectMapper {
                 project.getId(),
                 project.getName(),
                 project.getDescription(),
+                project.getAlertEmail(),
                 project.getEnvironment(),
                 project.getStatus(),
                 project.isIngestionEnabled(),
