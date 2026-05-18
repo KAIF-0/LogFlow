@@ -97,7 +97,6 @@ public class AlertService {
     }
 
     private void sendAlert(Long projectId, int count, int windowSec) {
-        // System.out.println("Sending alert for projectId: "+ projectId);
         Project project = projectRepository.findWithUserById(projectId).orElse(null);
         if (project == null || project.getUser() == null) {
             return;
@@ -107,7 +106,6 @@ public class AlertService {
         String body = "Failure threshold reached. Failed count: " + count + " in " + windowSec + " seconds.";
         // System.out.println("Sending email to: " + to + ", subject: " + subject + ", body: " + body);
         emailService.send(to, subject, body);
-        // System.out.println("Email sent to: " + to);
         ProjectAlert alert = new ProjectAlert();
         alert.setProjectId(projectId);
         alert.setAlertType("FAILURE_THRESHOLD");

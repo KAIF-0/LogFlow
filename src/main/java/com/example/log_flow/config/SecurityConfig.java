@@ -26,6 +26,7 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final RateLimitFilter rateLimitFilter;
     private final IngestionAuthFilter ingestionAuthFilter;
+    private final RequestLoggingFilter requestLoggingFilter;
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
     private final PasswordEncoder passwordEncoder;
@@ -35,6 +36,7 @@ public class SecurityConfig {
             JwtFilter jwtFilter,
             RateLimitFilter rateLimitFilter,
             IngestionAuthFilter ingestionAuthFilter,
+            RequestLoggingFilter requestLoggingFilter,
             AuthenticationEntryPoint authenticationEntryPoint,
             AccessDeniedHandler accessDeniedHandler,
             PasswordEncoder passwordEncoder
@@ -43,6 +45,7 @@ public class SecurityConfig {
         this.jwtFilter = jwtFilter;
         this.rateLimitFilter = rateLimitFilter;
         this.ingestionAuthFilter = ingestionAuthFilter;
+        this.requestLoggingFilter = requestLoggingFilter;
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.accessDeniedHandler = accessDeniedHandler;
         this.passwordEncoder = passwordEncoder;
@@ -67,6 +70,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .anyRequest().permitAll()
             )
+            .addFilterBefore(requestLoggingFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(ingestionAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -88,6 +92,7 @@ public class SecurityConfig {
                     .authenticationEntryPoint(authenticationEntryPoint)
                     .accessDeniedHandler(accessDeniedHandler)
                 )
+                .addFilterBefore(requestLoggingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, RateLimitFilter.class);
 
