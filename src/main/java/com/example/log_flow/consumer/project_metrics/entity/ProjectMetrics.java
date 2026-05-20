@@ -1,4 +1,4 @@
-package com.example.log_flow.consumer.aggregation.entity;
+package com.example.log_flow.consumer.project_metrics.entity;
 
 import java.time.Instant;
 

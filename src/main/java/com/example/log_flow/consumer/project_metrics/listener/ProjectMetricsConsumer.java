@@ -1,21 +1,21 @@
-package com.example.log_flow.consumer.aggregation.listener;
+package com.example.log_flow.consumer.project_metrics.listener;
 
-import com.example.log_flow.consumer.aggregation.service.MetricsAggregationService;
+import com.example.log_flow.consumer.project_metrics.service.ProjectMetricsAggregationService;
 import com.example.log_flow.ingestion.dto.ValidatedLogBatchMessage;
 import com.example.log_flow.messaging.config.RabbitMqConfig;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MetricsAggregationConsumer {
+public class ProjectMetricsConsumer {
 
-    private final MetricsAggregationService metricsAggregationService;
+    private final ProjectMetricsAggregationService metricsAggregationService;
 
-    public MetricsAggregationConsumer(MetricsAggregationService metricsAggregationService) {
+    public ProjectMetricsConsumer(ProjectMetricsAggregationService metricsAggregationService) {
         this.metricsAggregationService = metricsAggregationService;
     }
 
-    @RabbitListener(queues = RabbitMqConfig.AGGREGATION_QUEUE)
+    @RabbitListener(queues = RabbitMqConfig.PROJECT_METRICS_QUEUE)
     public void handle(ValidatedLogBatchMessage message) {
         metricsAggregationService.aggregate(message);
     }

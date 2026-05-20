@@ -10,8 +10,8 @@ import com.example.log_flow.auth.entity.User;
 import com.example.log_flow.auth.repository.UserRepository;
 import com.example.log_flow.common.enums.ProjectStatus;
 import com.example.log_flow.common.exception.AppException;
-import com.example.log_flow.project.dto.CreateProjectRequest;
 import com.example.log_flow.project.dto.AlertEmailRequest;
+import com.example.log_flow.project.dto.CreateProjectRequest;
 import com.example.log_flow.project.dto.IngestionStatusRequest;
 import com.example.log_flow.project.dto.ProjectResponse;
 import com.example.log_flow.project.dto.UpdateProjectRequest;
@@ -28,15 +28,18 @@ public class ProjectService {
     private final UserRepository userRepository;
     private final ProjectKeyService projectKeyService;
     private final RulesService rulesService;
+    private final ProjectServiceManager projectServiceManager;
 
     public ProjectService(ProjectRepository projectRepository,
                           UserRepository userRepository,
                           ProjectKeyService projectKeyService,
-                          RulesService rulesService) {
+                          RulesService rulesService,
+                          ProjectServiceManager projectServiceManager) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.projectKeyService = projectKeyService;
         this.rulesService = rulesService;
+        this.projectServiceManager = projectServiceManager;
     }
 
     public ProjectResponse create(String email, CreateProjectRequest req) {
@@ -60,6 +63,7 @@ public class ProjectService {
         project.setUpdatedAt(Instant.now());
         projectRepository.save(project);
         rulesService.createDefaultsForProject(project);
+        projectServiceManager.createDefaultService(project.getId());
         return ProjectMapper.toResponse(project, rawKey);
     }
 

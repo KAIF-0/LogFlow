@@ -22,8 +22,9 @@ public class RabbitMqConfig {
 
     public static final String PROCESSING_EXCHANGE = "log.processing.exchange";
     public static final String PERSISTENCE_QUEUE = "log.persistence.queue";
-    public static final String AGGREGATION_QUEUE = "log.aggregation.queue";
+    public static final String PROJECT_METRICS_QUEUE = "log.project-metrics.queue";
     public static final String ALERT_QUEUE = "log.alert.queue";
+    public static final String SERVICE_METRICS_QUEUE = "log.service-metrics.queue";
 
     @Bean
     public Exchange ingestionExchange() {
@@ -51,8 +52,8 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public Queue aggregationQueue() {
-        return QueueBuilder.durable(AGGREGATION_QUEUE).build();
+    public Queue projectMetricsQueue() {
+        return QueueBuilder.durable(PROJECT_METRICS_QUEUE).build();
     }
 
     @Bean
@@ -61,18 +62,28 @@ public class RabbitMqConfig {
     }
 
     @Bean
+    public Queue serviceMetricsQueue() {
+        return QueueBuilder.durable(SERVICE_METRICS_QUEUE).build();
+    }
+
+    @Bean
     public Binding persistenceBinding(Exchange processingExchange, Queue persistenceQueue) {
         return BindingBuilder.bind(persistenceQueue).to(processingExchange).with("").noargs();
     }
 
     @Bean
-    public Binding aggregationBinding(Exchange processingExchange, Queue aggregationQueue) {
-        return BindingBuilder.bind(aggregationQueue).to(processingExchange).with("").noargs();
+    public Binding projectMetricsBinding(Exchange processingExchange, Queue projectMetricsQueue) {
+        return BindingBuilder.bind(projectMetricsQueue).to(processingExchange).with("").noargs();
     }
 
     @Bean
     public Binding alertBinding(Exchange processingExchange, Queue alertQueue) {
         return BindingBuilder.bind(alertQueue).to(processingExchange).with("").noargs();
+    }
+
+    @Bean
+    public Binding serviceMetricsBinding(Exchange processingExchange, Queue serviceMetricsQueue) {
+        return BindingBuilder.bind(serviceMetricsQueue).to(processingExchange).with("").noargs();
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package com.example.log_flow.consumer.aggregation.service;
+package com.example.log_flow.consumer.project_metrics.service;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -12,14 +12,14 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.log_flow.consumer.aggregation.entity.ProjectMetrics;
-import com.example.log_flow.consumer.aggregation.repository.ProjectMetricsRepository;
+import com.example.log_flow.consumer.project_metrics.entity.ProjectMetrics;
+import com.example.log_flow.consumer.project_metrics.repository.ProjectMetricsRepository;
 import com.example.log_flow.consumer.common.service.IngestionEventService;
 import com.example.log_flow.ingestion.dto.LifecycleLogRequest;
 import com.example.log_flow.ingestion.dto.ValidatedLogBatchMessage;
 
 @Service
-public class MetricsAggregationService {
+public class ProjectMetricsAggregationService {
 
     private static final int MAX_RETRIES = 3;
 
@@ -28,10 +28,10 @@ public class MetricsAggregationService {
     private final ProjectMetricsRepository metricsRepository;
     private final ObjectMapper objectMapper;
 
-    public MetricsAggregationService(StringRedisTemplate redisTemplate,
-                                     IngestionEventService ingestionEventService,
-                                     ProjectMetricsRepository metricsRepository,
-                                     ObjectMapper objectMapper) {
+    public ProjectMetricsAggregationService(StringRedisTemplate redisTemplate,
+                                            IngestionEventService ingestionEventService,
+                                            ProjectMetricsRepository metricsRepository,
+                                            ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;
         this.ingestionEventService = ingestionEventService;
         this.metricsRepository = metricsRepository;
@@ -49,8 +49,8 @@ public class MetricsAggregationService {
                 if (attempts >= MAX_RETRIES) {
                     ingestionEventService.recordFailure(
                             message.getProjectId(),
-                            "AGGREGATION_FAILURE",
-                            "log.aggregation.queue",
+                            "PROJECT_METRICS_FAILURE",
+                            "log.project-metrics.queue",
                             message.getLogs().size(),
                             attempts,
                             e.getMessage()
