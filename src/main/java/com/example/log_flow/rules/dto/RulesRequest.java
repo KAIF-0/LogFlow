@@ -15,31 +15,37 @@ import lombok.NoArgsConstructor;
 public class RulesRequest {
 
     @NotNull
-    @Min(1)
-    @Max(10240)
+    @Min(value = 1, message = "Max payload size must be at least 1 KB")
+    @Max(value = 10240, message = "Max payload size must be at most 10240 KB")
     private Integer maxPayloadSizeKb;
 
     @NotNull
-    private List<String> blockedRoutes;
+    @jakarta.validation.constraints.Size(max = 1000, message = "Blocked routes must be at most 1000")
+    private List<@jakarta.validation.constraints.NotBlank String> blockedRoutes;
 
     @NotNull
-    private List<String> maskedFields;
+    @jakarta.validation.constraints.Size(max = 1000, message = "Masked fields must be at most 1000")
+    private List<@jakarta.validation.constraints.NotBlank String> maskedFields;
 
     @NotNull
-    private List<String> headerWhitelist;
+    @jakarta.validation.constraints.Size(max = 1000, message = "Header whitelist must be at most 1000")
+    private List<@jakarta.validation.constraints.NotBlank String> headerWhitelist;
 
     @NotNull
-    @Min(0)
-    @Max(100)
+    @Min(value = 0, message = "Sampling rate must be at least 0")
+    @Max(value = 100, message = "Sampling rate must be at most 100")
     private Integer samplingRate;
 
     @NotNull
-    @Min(1)
+    @Min(value = 1, message = "Rate limit per minute must be at least 1")
+    @Max(value = 100000, message = "Rate limit per minute must be at most 100000")
     private Integer rateLimitPerMin;
 
-    @Min(1)
+    @Min(value = 1, message = "Alert failure threshold must be at least 1")
+    @Max(value = 100000, message = "Alert failure threshold must be at most 100000")
     private Integer alertFailureThreshold;
 
-    @Min(1)
+    @Min(value = 1, message = "Alert time window must be at least 1 second")
+    @Max(value = 86400, message = "Alert time window must be at most 86400 seconds")
     private Integer alertTimeWindowSec;
 }

@@ -57,3 +57,14 @@ jwt:
 
 resend:
   api-key: ${RESEND_API_KEY:}
+
+app:
+  cors:
+    allowed-origins: ${FRONTEND_URLS:}
+
+    
+logging:
+  level:
+    org.springdoc: DEBUG
+    org.springframework.web: DEBUG
+

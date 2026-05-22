@@ -1,7 +1,9 @@
 package com.example.log_flow.consumer.persistence.repository;
 
-import com.example.log_flow.consumer.persistence.entity.ProjectLog;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface ProjectLogRepository extends JpaRepository<ProjectLog, Long> {
+import com.example.log_flow.consumer.persistence.entity.ProjectLog;
+
+public interface ProjectLogRepository extends JpaRepository<ProjectLog, Long>, JpaSpecificationExecutor<ProjectLog> {
 }

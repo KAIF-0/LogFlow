@@ -13,5 +13,6 @@ public class AlertEmailRequest {
 
     @NotBlank
     @Email
+    @jakarta.validation.constraints.Size(max = 255, message = "Alert email must be at most 255 characters")
     private String alertEmail;
 }
