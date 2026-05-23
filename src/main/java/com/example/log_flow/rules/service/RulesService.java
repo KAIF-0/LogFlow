@@ -54,8 +54,15 @@ public class RulesService {
         ProjectRules rules = rulesRepository.findByProjectId(project.getId())
                 .orElseGet(() -> createDefaults(project));
 
+        List<String> blockedRoutes = request.getBlockedRoutes();
+        List<String> invalidRoutes = BlockedRouteMatcher.findInvalidPatterns(blockedRoutes);
+        if (!invalidRoutes.isEmpty()) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "invalid_blocked_route", "Invalid blocked route pattern", invalidRoutes);
+        }
+        List<String> normalizedBlockedRoutes = BlockedRouteMatcher.normalizePatterns(blockedRoutes);
+
         rules.setMaxPayloadSizeKb(request.getMaxPayloadSizeKb());
-        rules.setBlockedRoutesJson(writeList(request.getBlockedRoutes()));
+        rules.setBlockedRoutesJson(writeList(normalizedBlockedRoutes));
         rules.setMaskedFieldsJson(writeList(request.getMaskedFields()));
         rules.setHeaderWhitelistJson(writeList(request.getHeaderWhitelist()));
         rules.setSamplingRate(request.getSamplingRate());

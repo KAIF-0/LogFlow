@@ -8,9 +8,11 @@ import com.example.log_flow.rules.entity.ProjectRules;
 import com.example.log_flow.rules.repository.ProjectRulesRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
+
+import com.example.log_flow.rules.service.BlockedRouteMatcher;
 
 @Service
 public class RulesProcessingService {
@@ -47,7 +51,6 @@ public class RulesProcessingService {
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "rules_not_found", "Rules not found"));
 
         List<String> blockedRoutes = readList(rules.getBlockedRoutesJson());
-        Set<String> blockedSet = Set.copyOf(blockedRoutes);
         Set<String> maskedSet = Set.copyOf(readList(rules.getMaskedFieldsJson()));
         Set<String> headerWhitelist = Set.copyOf(readList(rules.getHeaderWhitelistJson()));
 
@@ -73,7 +76,7 @@ public class RulesProcessingService {
                 continue;
             }
 
-            if (blockedSet.contains(log.getPath())) {
+            if (BlockedRouteMatcher.isBlocked(blockedRoutes, log.getPath())) {
                 continue;
             }
 
