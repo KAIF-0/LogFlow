@@ -1,13 +1,22 @@
 package com.example.log_flow.rules.entity;
 
+import java.time.Instant;
+
 import com.example.log_flow.project.entity.Project;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.Instant;
 
 @Entity
 @Table(name = "project_rules")
@@ -48,6 +57,15 @@ public class ProjectRules {
 
     @Column(name = "alert_time_window_sec")
     private Integer alertTimeWindowSec;
+
+    @Column(name = "alert_latency_threshold_ms")
+    private Integer alertLatencyThresholdMs;
+
+    @Column(name = "alert_latency_breach_count")
+    private Integer alertLatencyBreachCount;
+
+    @Column(name = "alert_latency_window_sec")
+    private Integer alertLatencyWindowSec;
 
     @Column(name = "created_at", updatable = false)
     private Instant createdAt = Instant.now();

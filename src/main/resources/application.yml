@@ -63,8 +63,8 @@ app:
     allowed-origins: ${FRONTEND_URLS:}
 
     
-logging:
-  level:
-    org.springdoc: DEBUG
-    org.springframework.web: DEBUG
+# logging:
+#   level:
+#     org.springdoc: DEBUG
+#     org.springframework.web: DEBUG
 

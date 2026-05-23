@@ -48,4 +48,16 @@ public class RulesRequest {
     @Min(value = 1, message = "Alert time window must be at least 1 second")
     @Max(value = 86400, message = "Alert time window must be at most 86400 seconds")
     private Integer alertTimeWindowSec;
+
+    @Min(value = 1, message = "Alert latency threshold must be at least 1 ms")
+    @Max(value = 60000, message = "Alert latency threshold must be at most 60000 ms")
+    private Integer alertLatencyThresholdMs;
+
+    @Min(value = 1, message = "Alert latency breach count must be at least 1")
+    @Max(value = 100000, message = "Alert latency breach count must be at most 100000")
+    private Integer alertLatencyBreachCount;
+
+    @Min(value = 1, message = "Alert latency window must be at least 1 second")
+    @Max(value = 86400, message = "Alert latency window must be at most 86400 seconds")
+    private Integer alertLatencyWindowSec;
 }

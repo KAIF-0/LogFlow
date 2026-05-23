@@ -21,6 +21,9 @@ public class RulesResponse {
     private Integer rateLimitPerMin;
     private Integer alertFailureThreshold;
     private Integer alertTimeWindowSec;
+    private Integer alertLatencyThresholdMs;
+    private Integer alertLatencyBreachCount;
+    private Integer alertLatencyWindowSec;
     private Instant createdAt;
     private Instant updatedAt;
 }

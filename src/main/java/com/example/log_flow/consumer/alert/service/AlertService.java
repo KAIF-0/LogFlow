@@ -1,6 +1,7 @@
 package com.example.log_flow.consumer.alert.service;
 
 import java.time.Duration;
+import java.time.Instant;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -48,35 +49,48 @@ public class AlertService {
         while (attempts < MAX_RETRIES) {
             try {
                 ProjectRules rules = rulesRepository.findByProjectId(message.getProjectId()).orElse(null);
-                if (rules == null || rules.getAlertFailureThreshold() == null) {
+                if (rules == null) {
                     return;
                 }
-                int threshold = rules.getAlertFailureThreshold();
-                int windowSec = rules.getAlertTimeWindowSec() == null ? DEFAULT_WINDOW_SEC : rules.getAlertTimeWindowSec();
-                String counterKey = "alerts:project:" + message.getProjectId() + ":error_window";
-                String lockKey = "alerts:project:" + message.getProjectId() + ":lock";
 
-                int failed = 0;
-                for (LifecycleLogRequest log : message.getLogs()) {
-                    if (log.getStatusCode() >= 500) {
-                        failed++;
+                Integer failureThreshold = rules.getAlertFailureThreshold();
+                if (failureThreshold != null) {
+                    int windowSec = rules.getAlertTimeWindowSec() == null ? DEFAULT_WINDOW_SEC : rules.getAlertTimeWindowSec();
+                    String counterKey = "alerts:project:" + message.getProjectId() + ":error_window";
+                    String lockKey = "alerts:project:" + message.getProjectId() + ":lock";
+
+                    int failed = 0;
+                    for (LifecycleLogRequest log : message.getLogs()) {
+                        if (log.getStatusCode() >= 500) {
+                            failed++;
+                        }
+                    }
+
+                    Integer triggeredCount = registerWindowCount(counterKey, lockKey, failed, failureThreshold, windowSec);
+                    if (triggeredCount != null) {
+                        // System.out.println("Threshold reached for projectId: " + message.getProjectId() + ", count: " + triggeredCount);
+                        sendFailureAlert(message.getProjectId(), triggeredCount, windowSec);
                     }
                 }
 
-                if (failed == 0) {
-                    return;
-                }
+                Integer latencyThresholdMs = rules.getAlertLatencyThresholdMs();
+                Integer latencyBreachCount = rules.getAlertLatencyBreachCount();
+                if (latencyThresholdMs != null && latencyBreachCount != null) {
+                    int windowSec = rules.getAlertLatencyWindowSec() == null ? DEFAULT_WINDOW_SEC : rules.getAlertLatencyWindowSec();
+                    String counterKey = "alerts:project:" + message.getProjectId() + ":latency_count";
+                    String lockKey = "alerts:project:" + message.getProjectId() + ":latency_lock";
 
-                Long count = redisTemplate.opsForValue().increment(counterKey, failed);
-                if (count != null && count == failed) {
-                    redisTemplate.expire(counterKey, Duration.ofSeconds(windowSec));
-                }
+                    int breached = 0;
+                    for (LifecycleLogRequest log : message.getLogs()) {
+                        Long latencyMs = log.getLatencyMs();
+                        if (latencyMs != null && latencyMs >= latencyThresholdMs) {
+                            breached++;
+                        }
+                    }
 
-                if (count != null && count >= threshold) {
-                    Boolean locked = redisTemplate.opsForValue().setIfAbsent(lockKey, "1", Duration.ofSeconds(windowSec));
-                    if (locked != null && locked) {
-                        // System.out.println("Threshold reached for projectId: " + message.getProjectId() + ", count: " + count);
-                        sendAlert(message.getProjectId(), count.intValue(), windowSec);
+                    Integer triggeredCount = registerWindowCount(counterKey, lockKey, breached, latencyBreachCount, windowSec);
+                    if (triggeredCount != null) {
+                        sendLatencyAlert(message.getProjectId(), latencyThresholdMs, triggeredCount, windowSec);
                     }
                 }
                 return;
@@ -96,7 +110,25 @@ public class AlertService {
         }
     }
 
-    private void sendAlert(Long projectId, int count, int windowSec) {
+    private Integer registerWindowCount(String counterKey, String lockKey, int incrementBy, int threshold, int windowSec) {
+        if (incrementBy <= 0) {
+            return null;
+        }
+        Long count = redisTemplate.opsForValue().increment(counterKey, incrementBy);
+        if (count != null && count == incrementBy) {
+            redisTemplate.expire(counterKey, Duration.ofSeconds(windowSec));
+        }
+
+        if (count != null && count >= threshold) {
+            Boolean locked = redisTemplate.opsForValue().setIfAbsent(lockKey, "1", Duration.ofSeconds(windowSec));
+            if (locked != null && locked) {
+                return count.intValue();
+            }
+        }
+        return null;
+    }
+
+    private void sendFailureAlert(Long projectId, int count, int windowSec) {
         Project project = projectRepository.findWithUserById(projectId).orElse(null);
         if (project == null) {
             return;
@@ -114,6 +146,30 @@ public class AlertService {
         alert.setAlertType("FAILURE_THRESHOLD");
         alert.setMessage(body);
         alert.setTriggeredCount(count);
+        alert.setTimeWindowSec(windowSec);
+        alert.setSentTo(to);
+        alert.setStatus("SENT");
+        alertRepository.save(alert);
+    }
+
+    private void sendLatencyAlert(Long projectId, int thresholdMs, int breachCount, int windowSec) {
+        Project project = projectRepository.findWithUserById(projectId).orElse(null);
+        if (project == null) {
+            return;
+        }
+        String to = project.getAlertEmail();
+        if (to == null || to.isBlank()) {
+            return;
+        }
+        String timestamp = Instant.now().toString();
+        String subject = "LogFlow latency alert for project " + project.getName();
+        String body = "Latency Alert: " + breachCount + " requests exceeded " + thresholdMs + "ms within " + windowSec + " seconds. Timestamp: " + timestamp + ".";
+        emailService.send(to, subject, body);
+        ProjectAlert alert = new ProjectAlert();
+        alert.setProjectId(projectId);
+        alert.setAlertType("LATENCY_THRESHOLD");
+        alert.setMessage(body);
+        alert.setTriggeredCount(breachCount);
         alert.setTimeWindowSec(windowSec);
         alert.setSentTo(to);
         alert.setStatus("SENT");

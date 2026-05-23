@@ -1,9 +1,9 @@
 package com.example.log_flow.rules.mapper;
 
+import java.util.List;
+
 import com.example.log_flow.rules.dto.RulesResponse;
 import com.example.log_flow.rules.entity.ProjectRules;
-
-import java.util.List;
 
 public class RulesMapper {
 
@@ -22,6 +22,9 @@ public class RulesMapper {
                 rules.getRateLimitPerMin(),
                 rules.getAlertFailureThreshold(),
                 rules.getAlertTimeWindowSec(),
+                rules.getAlertLatencyThresholdMs(),
+                rules.getAlertLatencyBreachCount(),
+                rules.getAlertLatencyWindowSec(),
                 rules.getCreatedAt(),
                 rules.getUpdatedAt()
         );

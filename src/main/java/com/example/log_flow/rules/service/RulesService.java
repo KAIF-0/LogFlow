@@ -69,6 +69,9 @@ public class RulesService {
         rules.setRateLimitPerMin(request.getRateLimitPerMin());
         rules.setAlertFailureThreshold(request.getAlertFailureThreshold());
         rules.setAlertTimeWindowSec(request.getAlertTimeWindowSec());
+        rules.setAlertLatencyThresholdMs(request.getAlertLatencyThresholdMs());
+        rules.setAlertLatencyBreachCount(request.getAlertLatencyBreachCount());
+        rules.setAlertLatencyWindowSec(request.getAlertLatencyWindowSec());
         rules.setUpdatedAt(Instant.now());
 
         rulesRepository.save(rules);
@@ -90,6 +93,9 @@ public class RulesService {
         rules.setRateLimitPerMin(DEFAULT_RATE_LIMIT_PER_MIN);
         rules.setAlertFailureThreshold(null);
         rules.setAlertTimeWindowSec(null);
+        rules.setAlertLatencyThresholdMs(null);
+        rules.setAlertLatencyBreachCount(null);
+        rules.setAlertLatencyWindowSec(null);
         rules.setCreatedAt(Instant.now());
         rules.setUpdatedAt(Instant.now());
         return rulesRepository.save(rules);
