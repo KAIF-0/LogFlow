@@ -129,7 +129,7 @@ public class RulesProcessingService {
         if (body == null || body.isBlank()) return body;
         try {
             Map<String, Object> json = objectMapper.readValue(body, new TypeReference<Map<String, Object>>() {});
-            maskMap(json, maskedFields);
+            maskMap(json, normalizeMaskedFields(maskedFields));
             return objectMapper.writeValueAsString(json);
         } catch (Exception e) {
             return body;
@@ -138,12 +138,22 @@ public class RulesProcessingService {
 
     private void maskMap(Map<String, Object> map, Set<String> maskedFields) {
         map.forEach((key, value) -> {
-            if (maskedFields.contains(key)) {
+            if (key != null && maskedFields.contains(key.toLowerCase())) {
                 map.put(key, "***");
             } else if (value instanceof Map<?, ?> nested) {
                 maskMap((Map<String, Object>) nested, maskedFields);
             }
         });
+    }
+
+    private Set<String> normalizeMaskedFields(Set<String> maskedFields) {
+        if (maskedFields == null || maskedFields.isEmpty()) {
+            return Set.of();
+        }
+        return maskedFields.stream()
+                .filter(value -> value != null && !value.isBlank())
+                .map(value -> value.toLowerCase())
+                .collect(java.util.stream.Collectors.toSet());
     }
 
     private boolean isValidJson(String body) {

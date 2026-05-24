@@ -14,6 +14,5 @@ import lombok.NoArgsConstructor;
 public class BatchLogRequest {
 
     @NotEmpty
-    @jakarta.validation.constraints.Size(max = 1000, message = "Logs batch must be at most 1000 items")
     private List<@Valid LifecycleLogRequest> logs;
 }
