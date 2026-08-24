@@ -1,4 +1,4 @@
-package com.example.log_flow.config;
+package com.example.log_flow.config.filter;
 
 import com.example.log_flow.ingestion.security.IngestionAuthFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

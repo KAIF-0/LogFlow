@@ -5,12 +5,14 @@ import com.example.log_flow.ingestion.dto.BatchLogRequest;
 import com.example.log_flow.ingestion.dto.ProjectContext;
 import com.example.log_flow.ingestion.service.IngestionService;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/logs")
+@SecurityRequirement(name = "apiKeyAuth")
 public class IngestionController {
 
     private final IngestionService ingestionService;

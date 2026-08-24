@@ -14,9 +14,11 @@ import com.example.log_flow.project.dto.ProjectServiceRequest;
 import com.example.log_flow.project.dto.ProjectServiceResponse;
 import com.example.log_flow.project.dto.UpdateProjectServiceRequest;
 import com.example.log_flow.project.service.ProjectServiceManager;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/projects/{projectId}/services")
+@SecurityRequirement(name = "bearerAuth")
 public class ProjectServiceController {
 
     private final ProjectServiceManager projectServiceManager;

@@ -9,6 +9,7 @@ import com.example.log_flow.auth.service.AuthService;
 import com.example.log_flow.auth.repository.UserRepository;
 import com.example.log_flow.common.exception.AppException;
 import com.example.log_flow.common.response.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,6 +42,7 @@ public class AuthController {
     }
 
     @GetMapping("/me")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<ApiResponse<UserResponse>> me(@AuthenticationPrincipal UserDetails details) {
         if (details == null) {
             throw new AppException(HttpStatus.UNAUTHORIZED, "unauthorized", "Unauthorized");

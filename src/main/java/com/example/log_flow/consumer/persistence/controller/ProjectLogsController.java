@@ -24,9 +24,11 @@ import com.example.log_flow.common.response.Pagination;
 import com.example.log_flow.consumer.persistence.dto.ProjectLogResponse;
 import com.example.log_flow.consumer.persistence.entity.ProjectLog;
 import com.example.log_flow.consumer.persistence.service.ProjectLogQueryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/projects/{projectId}/logs")
+@SecurityRequirement(name = "bearerAuth")
 public class ProjectLogsController {
 
     private static final int DEFAULT_PAGE = 1;

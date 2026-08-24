@@ -9,6 +9,7 @@ import com.example.log_flow.consumer.alert.dto.ProjectAlertResponse;
 import com.example.log_flow.consumer.alert.entity.ProjectAlert;
 import com.example.log_flow.consumer.alert.repository.ProjectAlertRepository;
 import com.example.log_flow.project.repository.ProjectRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/projects/{projectId}/alerts")
+@SecurityRequirement(name = "bearerAuth")
 public class ProjectAlertsController {
 
     private static final int DEFAULT_PAGE = 1;

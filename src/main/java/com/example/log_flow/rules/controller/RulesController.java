@@ -5,6 +5,7 @@ import com.example.log_flow.rules.dto.RulesRequest;
 import com.example.log_flow.rules.dto.RulesResponse;
 import com.example.log_flow.rules.service.RulesService;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/projects/{projectId}/rules")
+@SecurityRequirement(name = "bearerAuth")
 public class RulesController {
 
     private final RulesService rulesService;

@@ -23,9 +23,11 @@ import com.example.log_flow.consumer.project_metrics.dto.ProjectMetricsResponse;
 import com.example.log_flow.consumer.project_metrics.entity.ProjectMetrics;
 import com.example.log_flow.consumer.project_metrics.repository.ProjectMetricsRepository;
 import com.example.log_flow.project.repository.ProjectRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/projects/{projectId}/metrics")
+@SecurityRequirement(name = "bearerAuth")
 public class ProjectMetricsController {
 
     private final ProjectMetricsRepository projectMetricsRepository;
