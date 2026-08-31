@@ -49,6 +49,18 @@ server:
       min-spare: 20
     accept-count: 100
 
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+      probes:
+        enabled: true
+
 rate-limit:
   requests-per-minute: ${RATE_LIMIT_REQUESTS_PER_MINUTE:5}
   burst-capacity: ${RATE_LIMIT_BURST_CAPACITY:10}
